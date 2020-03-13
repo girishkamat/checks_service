@@ -8,6 +8,9 @@
   },
   "author": "Girish Kamath",
   "license": "ISC",
+  "engines": {
+    "node": "13.x"
+  },
   "dependencies": {
     "@hapi/joi": "^17.1.0",
     "axios": "^0.19.2",
