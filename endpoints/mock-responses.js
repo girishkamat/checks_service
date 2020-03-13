@@ -1,6 +1,6 @@
 module.exports.doAMLCheckResponse = () => {
     return {
-        id: 1,
+        id: Math.floor((Math.random() * 1000) + 1),
         status: "Application"
     }
 }
