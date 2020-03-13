@@ -2,6 +2,7 @@ const router = require('express').Router()
 const validationMiddleware = require('./validation-middleware')
 const Joi = require('@hapi/joi')
 const verifileProxy = require('../endpoints/verifile-proxy')
+const mockResponses = require('../endpoints/mock-responses')
 
 /**
  * @swagger
@@ -11,6 +12,13 @@ const verifileProxy = require('../endpoints/verifile-proxy')
  *     description: Performs AML check using the verifile API
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: mock
+ *         required: false
+ *         schema:
+ *            type: boolean
+ *         description: When true, returns a mock response
  *     requestBody:
  *       description: The data required to perform AML check
  *       required: true
@@ -199,18 +207,22 @@ const checkAMLSchema = Joi.object().keys({
 router.post('/check/aml',
     validationMiddleware(checkAMLSchema, 'body'),
     (req, res) => {
-        verifileProxy
-            .doAMLCheck(req.body)
-            .then((response) => {
-                res.status(200).json({
-                    id: response.data.Id,
-                    status: response.data.OrderState.StateDescription
+        if(req.query.mock == "true") {
+            res.status(200).json(mockResponses.doAMLCheckResponse())
+        } else {
+            verifileProxy
+                .doAMLCheck(req.body)
+                .then((response) => {
+                    res.status(200).json({
+                        id: response.data.Id,
+                        status: response.data.OrderState.StateDescription
+                    })
                 })
-            })
-            .catch((error) => {
-                console.log(error)
-                res.status(500).json({ error: error })
-            })
+                .catch((error) => {
+                    console.log(error)
+                    res.status(500).json({ error: error })
+                })
+        }
     }
 );
 /**
@@ -223,29 +235,55 @@ router.post('/check/aml',
  *          produces:
  *            - application/json
  *          parameters:
+ *              - in: query
+ *                name: mock
+ *                required: false
+ *                schema:
+ *                  type: boolean
+ *                description: When true, returns a mock response   
  *              - in: path
  *                name: id   # Note the name is the same as in the path
  *                required: true
  *                schema:
  *                  type: integer
  *                description: The id of a previously requested check
+  *         responses:
+ *           200:
+ *              description: Returns id and application status
+ *              content:
+ *                  'application/json':
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              id:
+ *                                  type: integer
+ *                              candidateFullName:
+ *                                  type: string
+ *                              check:
+ *                                  type: integer
+ *                              status:
+ *                                  type: string
  */
 router.get('/check/:id/status',
     (req, res) => {
-        verifileProxy
-            .getOrderStatus(req.params.id)
-            .then((response) => {
-                res.status(200).json({
-                    id: response.data.id,
-                    candidateFullName: response.data.candidateFullName,
-                    check: mapCheckType(response.data.checkStatuses[0].checkName),
-                    status: response.data.orderStatus
+        if(req.query.mock == "true") {
+            res.status(200).json(mockResponses.getOrderStatusResponse(req.params.id))
+        } else {
+            verifileProxy
+                .getOrderStatus(req.params.id)
+                .then((response) => {
+                    res.status(200).json({
+                        id: response.data.id,
+                        candidateFullName: response.data.candidateFullName,
+                        check: mapCheckType(response.data.checkStatuses[0].checkName),
+                        status: response.data.orderStatus
+                    })
                 })
-            })
-            .catch((error) => {
-                console.log(error)
-                res.status(500).json({ error: error })
-            })
+                .catch((error) => {
+                    console.log(error)
+                    res.status(500).json({ error: error })
+                })
+        }
     });
 
 function mapCheckType(checkName) {
