@@ -2,7 +2,7 @@
 
 This is an API to perform various types of candidate checks using the Verifile API (https://www.verifile.co.uk/services)
 
-*Developer Account* 
+## Developer Account
 
 The developer guide is documented at https://developer.verifile.co.uk/guide/introduction
 
@@ -14,7 +14,7 @@ Password: Password2020
 
 and visit the profile page.
 
-*Sandbox API details*
+## Sandbox API details
 
 The following headers are required when making the API requests
 
@@ -32,7 +32,7 @@ curl -X GET \
   -H 'VerifileUserId: 39747fef-4dc6-4b19-b70a-b6b85a7e88ab' \
 ```
 
-*Checks*
+## Checks
 
 The checks service is currently deployed to heroku at http://checksservice.herokuapp.com
 
@@ -44,7 +44,7 @@ To get the status of the check, call the check status endpoint.
 
 All the endpoints support a mock query param, to return mock responses for faster development during integration.
 
-*Tech stack*
+## Tech stack
 
 The service is implemented as a NodeJS webserver, using the following libraries
 
@@ -56,7 +56,7 @@ The service is implemented as a NodeJS webserver, using the following libraries
 
 To start the webserver, simple call ```npm start```
 
-* Heroku *
+## Heroku
 
 
 
