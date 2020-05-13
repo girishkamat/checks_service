@@ -1,0 +1,787 @@
+components:
+  schemas:
+    getOrderReportSchema:
+      type: object
+      properties:
+        Id:
+          type: number
+          example: '7709'
+        UniqueKey:
+          type: string
+          format: uuid
+          example: 3b020645-66b3-44d0-8cdb-e217d485e227
+        CandidateLinkKey:
+          type: string
+          example: null
+        Package:
+          type: string
+          example: ''
+        OrderState:
+          type: object
+          properties:
+            StateDescription:
+              type: string
+              example: Completed - Green
+        Checks:
+          type: object
+          properties:
+            CheckType:
+              type: string
+              example: UKCreditCheckEquifax
+            Id:
+              type: string
+              example: '5940'
+            CheckState:
+              type: object
+              properties:
+                StateDescription:
+                  type: string
+                  example: Completed - Green
+            Comment:
+              type: string
+              example: ''
+            CheckCreditEquifaxTotalChecksIncluded:
+              type: number
+              example: 1
+            CheckCreditEquifaxTotalAdverseRecords:
+              type: number
+              example: 1
+            CheckCreditEquifaxTotalValueOfCCJs:
+              type: number
+              example: 12288.61
+            CheckCreditEquifaxLatestCCJDate:
+              type: string
+              example: '2016-11-05'
+            CheckCreditEquifaxTotalBankruptcyOrders:
+              type: number
+              example: 0
+            CheckCreditEquifaxTotalVoluntaryArrangements:
+              type: number
+              example: 0
+            CheckCreditEquifaxTotalNoticesOfCorrection:
+              type: number
+              example: 0
+            CheckCreditEquifaxTotalPreviousSearches:
+              type: number
+              example: 1
+            CheckCreditEquifaxCurrentAddressVarified:
+              type: string
+              example: 'Yes'
+            CheckCreditRollingRegister:
+              type: array
+              items:
+                $ref: '#/components/schemas/rollingRegisterSchema'
+            CheckCreditCountyCourtJudgements:
+              type: array
+              items:
+                $ref: '#/components/schemas/countyCourtJudgementsSchema'
+            CheckCreditAllSearches:
+              type: array
+              items:
+                $ref: '#/components/schemas/allSearchesSchema'
+            CheckCreditAliases:
+              type: array
+              items:
+                $ref: '#/components/schemas/aliasesSchema'
+            CheckCreditElectoralRole:
+              type: array
+              items:
+                $ref: '#/components/schemas/electoralRoleSchema'
+            CheckCreditMatchedAddresses:
+              type: array
+              items:
+                $ref: '#/components/schemas/matchedAddressesSchema'
+            CheckCreditNoticeOfCorrection:
+              type: array
+              items:
+                $ref: '#/components/schemas/noticeOfCorrectionsSchema'
+            CheckGroups:
+              type: array
+              items:
+                $ref: '#/components/schemas/checkGroup'
+            Candidate:
+              type: object
+              items:
+                $ref: '#/components/schemas/candidate'
+            CheckSpecificData:
+              type: object
+              items:
+                $ref: '#/components/schemas/checkSpecficdata'
+    rollingRegisterSchema:
+      type: object
+      properties:
+        CheckCreditRegisterDateOfBirth:
+          type: string
+        CheckCreditRegisterJuniorSeniorIndicator:
+          type: string
+        CheckCreditRegisterSupplyDate:
+          type: string
+        CheckCreditRegisterRecordType:
+          type: string
+        CheckCreditAddressMatchedId:
+          type: number
+        CheckCreditRegisterName:
+          type: object
+          properties:
+            Title:
+              type: string
+            FirstName:
+              type: string
+            LastName:
+              type: string
+            MiddleNames:
+              type: string
+            FullName:
+              type: string
+    countyCourtJudgementsSchema:
+      type: object
+      properties:
+        CheckCreditCcjDateOfBirth:
+          type: string
+          example: null
+        CheckCreditCcjCourtDate:
+          type: string
+          example: '2016-11-05'
+        CheckCreditCcjValue:
+          type: number
+          example: 12288.61
+        CheckCreditCcjType:
+          type: string
+          example: 'County Court Judgement (England, Wales and Northern Ireland)'
+        CheckCreditCcjSatisfiedDate:
+          type: string
+          example: null
+        CheckCreditCcjCourtName:
+          type: string
+          example: Verifile Magistrates Court
+        CheckCreditCcjCaseNumber:
+          type: string
+          example: VF9706861
+        CheckCreditCcjCourtCode:
+          type: string
+          example: VF1
+        CheckCreditAddressMatchedId:
+          type: string
+          example: '812'
+        CheckCreditRegisterName:
+          type: object
+          properties:
+            Title:
+              type: string
+              example: Mr
+            FirstName:
+              type: string
+              example: Amy
+            LastName: null
+            type: string
+            example: Smith
+            MiddleNames:
+              type: string
+              example: Clare
+            FullName:
+              type: string
+    allSearchesSchema:
+      type: object
+      properties:
+        CheckCreditSearchDateOfBirth:
+          type: string
+          example: '1992-09-28'
+        CheckCreditSearchDate:
+          type: string
+          example: '2020-05-02'
+        CheckCreditSearchAccountNumber:
+          type: string
+          example: ''
+        CheckCreditSearchCompanyType:
+          type: string
+          example: MO
+        CheckCreditSearchCompanyName:
+          type: string
+          example: ''
+        CheckCreditSearchType:
+          type: string
+          example: SR
+        CheckCreditSearchOptInOutFlag:
+          type: string
+          example: I
+        CheckCreditSearchJointApplicantFlag:
+          type: string
+          example: 'N'
+        CheckCreditAddressMatchedId:
+          type: number
+          example: 812
+        CheckCreditRegisterName:
+          type: object
+          properties:
+            Title:
+              type: string
+              example: Mr
+            FirstName:
+              type: string
+              example: Amy
+            LastName:
+              type: string
+              example: Smith
+            MiddleNames:
+              type: string
+              example: Clare
+            FullName:
+              type: string
+    aliasesSchema:
+      type: object
+      properties:
+        CheckCreditAliasDateOfBirth:
+          type: string
+        CheckCreditAliasName:
+          type: object
+          properties:
+            Title:
+              type: string
+            FirstName:
+              type: string
+            LastName:
+              type: string
+            MiddleNames:
+              type: string
+            FullName:
+              type: string
+    electoralRoleSchema:
+      type: object
+      properties:
+        CheckCreditElectoralRoleDateOfBirth:
+          type: string
+        CheckCreditElectoralRoleJuniorSeniorIndicator:
+          type: string
+        CheckCreditElectoralRolePeriod:
+          type: string
+        CheckCreditAddressMatchedId:
+          type: string
+        CheckCreditElectoralRoleName:
+          type: object
+          properties:
+            Title:
+              type: string
+            FirstName:
+              type: string
+            LastName:
+              type: string
+            MiddleNames:
+              type: string
+            FullName:
+              type: string
+    matchedAddressesSchema:
+      type: object
+      properties:
+        CheckCreditAddressMatchedId:
+          type: number
+        CheckCreditAddressIsCurrent:
+          type: boolean
+        CheckCreditEquifaxAddress:
+          type: object
+          properties:
+            BusinessName:
+              type: string
+            FlatNumber:
+              type: string
+            HouseNumber:
+              type: string
+            HouseName:
+              type: string
+            StreetName:
+              type: string
+            Locality:
+              type: string
+            Town:
+              type: string
+            County:
+              type: string
+            State:
+              type: string
+            Postcode:
+              type: string
+            AddressString:
+              type: string
+            Country:
+              type: string
+    noticeOfCorrectionsSchema:
+      type: object
+      properties:
+        CheckCreditCorrectionDateCreated:
+          type: string
+        CheckCreditCorrectionText:
+          type: string
+        CheckCreditCorrectionContinuationIndicator:
+          type: string
+        CheckCreditAddressMatchedId:
+          type: string
+        CheckCreditCorrectionDateOfBirth:
+          type: string
+        CheckCreditCorrectionName:
+          type: object
+          properties:
+            Title:
+              type: string
+            FirstName:
+              type: string
+            LastName:
+              type: string
+            MiddleNames:
+              type: string
+            FullName:
+              type: string
+    checkGroup:
+      type: object
+      properties:
+        Quantity:
+          type: number
+        CheckTypeId:
+          type: string
+        Checks:
+          type: array
+          items:
+            type: object
+            required:
+              - CheckType
+            properties:
+              CheckType:
+                type: string
+              Id:
+                type: string
+              CheckState:
+                type: object
+                properties:
+                  StateDescription:
+                    type: string
+    candidate:
+      type: object
+      properties:
+        PreviousNames:
+          type: array
+          items:
+            type: object
+            required:
+              - FirstName
+            properties:
+              Title:
+                type: string
+                format: enum
+              FirstName:
+                type: string
+              LastName:
+                type: string
+              MiddleNames:
+                type: string
+              FullName:
+                type: string
+              IsFromBirth:
+                type: boolean
+              KnownFromDate:
+                type: string
+                format: date
+              KnownToDate:
+                type: string
+                format: date
+        AddressList:
+          type: array
+          items:
+            type: object
+            properties:
+              DateMovedToThisAddress:
+                type: string
+                format: date
+              DateLeftThisAddress:
+                type: string
+                format: date
+              IsCurrentAddress:
+                type: boolean
+              Address:
+                type: object
+                properties:
+                  BusinessName:
+                    type: string
+                  FlatNumber:
+                    type: string
+                  HouseNumber:
+                    type: string
+                  HouseName:
+                    type: string
+                  StreetName:
+                    type: string
+                  Locality:
+                    type: string
+                  Town:
+                    type: string
+                  County:
+                    type: string
+                  State:
+                    type: string
+                  Postcode:
+                    type: string
+                  AddressString:
+                    type: string
+                  Country:
+                    type: string
+                    format: enum
+        CurrentName:
+          type: object
+          properties:
+            Title:
+              type: string
+              format: enum
+            FirstName:
+              type: string
+            LastName:
+              type: string
+            MiddleNames:
+              type: string
+            FullName:
+              type: string
+            IsFromBirth:
+              type: boolean
+            KnownFromDate:
+              type: string
+              format: date
+        PersonalInfo:
+          properties:
+            Gender:
+              type: string
+              format: enum
+            DateOfBirth:
+              type: string
+              format: date
+            PurchaseOrderNumber:
+              type: string
+            OtherReference:
+              type: string
+            PositionAppliedFor:
+              type: string
+            ApplicantNotes:
+              type: string
+            FSAApproved:
+              type: boolean
+            HasValidDrivingLicense:
+              type: boolean
+            ApplicantType:
+              type: string
+              format: enum
+              example: Current Employee
+            CurrentNationality:
+              type: string
+              format: enum
+            BirthCertificateCountry:
+              type: string
+              format: enum
+            CandidateEmail:
+              type: string
+              format: email
+            BirthCertificationNumber:
+              type: string
+            MotherMaidenName:
+              type: string
+            NationalityAtBirth:
+              type: string
+              format: enum
+            CountryOfBirth:
+              type: string
+              format: enum
+            TownOfBirth:
+              type: string
+            VisaNationality:
+              type: string
+            EUNationalIdCardCountry:
+              type: string
+            MobilePhone:
+              type: object
+              properties:
+                PhoneNumber:
+                  type: string
+                CountryCode:
+                  type: string
+                  format: enum
+            HomePhone:
+              type: object
+              properties:
+                PhoneNumber:
+                  type: string
+                CountryCode:
+                  type: string
+                  format: enum
+        Identity:
+          type: object
+          properties:
+            PassportDocument:
+              type: object
+              items:
+                $ref: '#/components/schemas/PassportDocument'
+            DrivingDocument:
+              type: object
+              items:
+                $ref: '#/components/schemas/DrivingDocument'
+            NationalInsuranceNumberDocument:
+              type: object
+              items:
+                $ref: '#/components/schemas/NationalInsuranceNumberDocument'
+    PassportDocument:
+      type: object
+      properties:
+        PassportIssuingCountry:
+          type: string
+          format: enum
+        PassportNumber:
+          type: string
+        PassportIssueDate:
+          type: string
+          format: date
+        PassportExpiryDate:
+          type: string
+          format: date
+        PassportDateOfBirth:
+          type: string
+          format: date
+    DrivingDocument:
+      type: object
+      properties:
+        DriverLicenseType:
+          type: string
+          format: enum
+        DriverLicenseIssuingCountry:
+          type: string
+          format: enum
+        DriverLicenseNumber:
+          type: string
+        DriverLicenseDate:
+          type: string
+          format: date
+        DriverLicenseDateOfBirth:
+          type: string
+          format: date
+    NationalInsuranceNumberDocument:
+      type: object
+      properties:
+        NationalInsuranceNumber:
+          type: string
+        OverseasIdentityNumber:
+          $ref: '#/components/schemas/OverseasIdentityNumber'
+    OverseasIdentityNumber:
+      type: object
+      properties:
+        IssuingCountry:
+          type: string
+          format: enum
+        IdentityNumber:
+          type: string
+    checkSpecficdata:
+      type: object
+      properties:
+        CheckCriminalPurposeOfCheck:
+          type: string
+          format: enum
+        CheckCriminalEmploymentSector:
+          type: string
+          format: enum
+        CheckCriminalPositionAppliedFor:
+          type: string
+        CheckCriminalEmployerName:
+          type: string
+        CheckCriminalJobRoleId:
+          type: number
+    applicantInputSchema:
+      type: object
+      required:
+        - CurrentName
+        - PreviousNames
+        - PersonalInfo
+        - AddressList
+        - Identity
+      properties:
+        CurrentName:
+          type: object
+          required:
+            - Title
+            - FirstName
+            - LastName
+            - IsFromBirth
+          properties:
+            Title:
+              type: string
+              example: Mr
+            FirstName:
+              type: string
+              example: Amy
+            LastName:
+              type: string
+              example: Smith
+            MiddleNames:
+              type: string
+              example: Clare
+            IsFromBirth:
+              type: boolean
+              example: false
+            KnownFromDate:
+              type: string
+              example: '2011-10-31'
+        PreviousNames:
+          type: array
+          items:
+            type: object
+            properties:
+              IsFromBirth:
+                type: boolean
+                example: true
+              KnownToDate:
+                type: string
+                example: '2011-10-31'
+              Title:
+                type: string
+                example: Mr
+              FirstName:
+                type: string
+                example: Amy
+              LastName:
+                type: string
+                example: Smith-ccj
+              MiddleNames:
+                type: string
+                example: Clare
+        PersonalInfo:
+          type: object
+          required:
+            - Gender
+            - DateOfBirth
+            - ApplicantType
+          properties:
+            Gender:
+              type: string
+              example: Male
+            DateOfBirth:
+              type: string
+              example: '1992-09-28'
+            ApplicantType:
+              type: string
+              format: enum
+              example: Current Employee
+        AddressList:
+          type: array
+          items:
+            type: object
+            required:
+              - Address
+              - DateMovedToThisAddress
+              - IsCurrentAddress
+            properties:
+              Address:
+                type: object
+                required:
+                  - FlatNumber
+                  - HouseNumber
+                  - HouseName
+                properties:
+                  BusinessName:
+                    type: string
+                    example: The Business
+                  FlatNumber:
+                    type: string
+                    example: 6b
+                  HouseNumber:
+                    type: string
+                    example: '999'
+                  HouseName:
+                    type: string
+                    example: House View
+                  StreetName:
+                    type: string
+                    example: Gold Furlong
+                  Locality:
+                    type: string
+                    example: Marston Moretaine
+                  Town:
+                    type: string
+                    example: Bedford
+                  County:
+                    type: string
+                    example: Bedfordshire
+                  State:
+                    type: string
+                    example: England
+                  Postcode:
+                    type: string
+                    example: MK43 0EG
+                  Country:
+                    type: string
+                    example: GB
+              DateMovedToThisAddress:
+                type: string
+                example: '2010-05-05'
+              DateLeftThisAddress:
+                type: string
+                example: null
+              IsCurrentAddress:
+                type: boolean
+                example: true
+        Identity:
+          type: object
+          required:
+            - PassportDocument
+          properties:
+            PassportDocument:
+              type: object
+              required:
+                - PassportIssuingCountry
+                - PassportNumber
+              properties:
+                PassportIssuingCountry:
+                  type: string
+                  example: GB
+                PassportNumber:
+                  type: string
+                  example: '123456789'
+                PassportIssueDate:
+                  type: string
+                  example: '2014-01-01'
+                PassportExpiryDate:
+                  type: string
+                  example: '2023-12-31'
+    getAmlReportSchema:
+      type: object
+      properties:
+        Id:
+          type: number
+          example: 7709
+        UniqueKey:
+          type: string
+          format: uuid
+          example: 3b020645-66b3-44d0-8cdb-e217d485e227
+        CandidateLinkKey:
+          type: string
+          example: null
+        Package:
+          type: string
+          example: ''
+        OrderState:
+          type: object
+          properties:
+            StateDescription:
+              type: string
+              example: Completed - Green
+        Checks:
+          type: object
+          properties:
+            CheckType:
+              type: string
+              example: UKIDAMLCheckUKAML
+            Id:
+              type: string
+              example: 5940
+            CheckState:
+              type: object
+              properties:
+                StateDescription:
+                  type: string
+                  example: Completed - Green
+            Comment:
+              type: string
+              example: ''
+        Candidate:
+          type: object
+          items:
+            $ref: '#/components/schemas/candidate'

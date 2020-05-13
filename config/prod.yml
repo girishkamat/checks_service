@@ -1,0 +1,6 @@
+port: 8081
+
+verifile:
+  endPoint: https://api.verifile.co.uk/sandbox.test
+  userId: 39747fef-4dc6-4b19-b70a-b6b85a7e88ab
+  ocpAPISubscriptionKey: 6dd810282309485d860964bef66caf15

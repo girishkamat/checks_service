@@ -1,297 +1,90 @@
 const router = require('express').Router()
 const validationMiddleware = require('./validation-middleware')
-const Joi = require('@hapi/joi')
 const verifileProxy = require('../endpoints/verifile-proxy')
-const mockResponses = require('../endpoints/mock-responses')
+const ValidationSchemas = require('./validation-schemas')
+var logger = require('log4js').getLogger('aml-check-route');
 
 /**
- * @swagger
- *
- * /check/aml:
- *   post:
- *     description: Performs AML check using the verifile API
- *     produces:
- *       - application/json
- *     parameters:
- *       - in: query
- *         name: mock
- *         required: false
- *         schema:
- *            type: boolean
- *         description: When true, returns a mock response
- *     requestBody:
- *       description: The data required to perform AML check
- *       required: true
- *       content:
- *          'application/json':
- *              schema: # Request body contents
- *                type: object  
- *                properties:  
- *                  previousNames:
- *                    type: array
- *                    items: 
- *                      type: object  
- *                      properties:
- *                          title: 
- *                              type: string
- *                              required: true    
- *                          firstName: 
- *                              type: string
- *                              required: true
- *                          lastName: 
- *                              type: string
- *                              required: true    
- *                          middleNames: 
- *                              type: string
- *                              required: true    
- *                          isFromBirth: 
- *                              type: boolean
- *                              required: true
- *                          knownFromDate: 
- *                              type: string
- *                              required: true
- *                          knownToDate: 
- *                              type: string
- *                              required: true
- *                  addressList:
- *                      type: array
- *                      items:
- *                          type: object
- *                          properties:
- *                              dateMovedToThisAddress:
- *                                  type: string
- *                                  required: true
- *                              dateLeftThisAddress:
- *                                  type: string
- *                                  required: false
- *                              isCurrentAddress:
- *                                  type: boolean
- *                                  required: true
- *                              address:
- *                                  type: object
- *                                  properties:
- *                                      houseNumber: 
- *                                          type: string
- *                                      streetName: 
- *                                          type: string
- *                                      town:
- *                                          type: string
- *                                      county:
- *                                          type: string
- *                                      postcode:
- *                                          type: string
- *                                      country: 
- *                                          type: string 
- *                  currentName:
- *                      type: object
- *                      properties:
- *                          title: 
- *                              type: string
- *                              required: true    
- *                          firstName: 
- *                              type: string
- *                              required: true
- *                          lastName: 
- *                              type: string
- *                              required: true    
- *                          middleNames: 
- *                              type: string
- *                              required: true    
- *                          isFromBirth: 
- *                              type: boolean
- *                              required: true   
- *                  personalInfo:
- *                      type: object
- *                      properties:
- *                          gender: 
- *                              type: string
- *                              required: true    
- *                          dateOfBirth: 
- *                              type: string
- *                              required: true
- *                          hasValidDrivingLicense: 
- *                              type: boolean
- *                              required: true    
- *                          candidateEmail: 
- *                              type: string
- *                              required: true    
- *                          motherMaidenName: 
- *                              type: string
- *                              required: true   
- *                          nationalityAtBirth: 
- *                              type: string
- *                              required: true   
- *                          countryOfBirth: 
- *                              type: string
- *                              required: true
- *                          townOfBirth: 
- *                              type: string
- *                              required: true   
- *                          mobilePhone: 
- *                              type: object
- *                              properties:
- *                                  phoneNumber:
- *                                      type: string
- *                                  countryCode:
- *                                      type: string
- *                          homePhone: 
- *                              type: object
- *                              required: false
- *                              properties:
- *                                  phoneNumber:
- *                                      type: string
- *                                  countryCode:
- *                                      type: string  
-*                  identity:
- *                      type: object
- *                      properties:                            
- *                          passportDocument: 
- *                              type: object
- *                              properties:
- *                                  passportIssuingCountry:
- *                                      type: string
- *                                  passportNumber:
- *                                      type: string             
- *                                  passportIssueDate:
- *                                      type: string
- *                                  passportExpiryDate:
- *                                      type: string   
- *                                  passportDateOfBirth:
- *                                      type: string  
- *                          drivingDocument: 
- *                              type: object
- *                              properties:
- *                                  driverLicenseType:
- *                                      type: string
- *                                  driverLicenseIssuingCountry:
- *                                      type: string             
- *                                  driverLicenseNumber:
- *                                      type: string
- *                                  driverLicenseDate:
- *                                      type: string   
- *                                  driverLicenseDateOfBirth:
- *                                      type: string       
- *                          nationalInsuranceNumberDocument: 
- *                              type: object
- *                              properties:
- *                                  nationalInsuranceNumber:
- *                                      type: string      
- *                required:
- *                  - addressList
- *                  - currentName
- *                  - personalInfo
- *                  - identity  
- *     responses:
- *          200:
- *              description: Returns id and application status
- *              content:
- *                  'application/json':
- *                      schema:
- *                          type: object
- *                          properties:
- *                              id:
- *                                  type: integer
- *                              status:
- *                                  type: string
- *                              
- */
-const checkAMLSchema = Joi.object().keys({
-    currentName: Joi.object().keys({
-        title: Joi.string().required(),
-        firstName: Joi.string().required(),
-        lastName: Joi.string().required(),
-        middleNames: Joi.string().required(),
-        isFromBirth: Joi.boolean().required()
-    })
-})
+* @swagger
+*  /check/aml:
+*    post:
+*      tags:
+*        - AMLCheck
+*      description: |
+*        Do AML check and get the report
+*      consumes:
+*        - application/json  
+*      produces:
+*        - application/json
+*      parameters:
+*        - name: Applicant details
+*          description: details about the applicant
+*          in: body
+*          required: true
+*          schema:
+*            $ref: '#/components/schemas/applicantInputSchema'
+*      responses:
+*        200:
+*          description: amlcheckreport
+*          schema:
+*            type: object
+*            items:
+*              $ref: '#/components/schemas/getAmlReportSchema'
+*        400:
+*          description: Bad Request Input
+*          schema :
+*            type: object
+*            properties :
+*              status: 
+*                type: number
+*                example: 400
+*              name: 
+*                type: string
+*                example : "Bad Request"
+*              message:
+*                type : array
+*                items :
+*                  type : object
+*                  properties:
+*                    message:
+*                      type: string
+*                      example : "Name must either have a KnownFromDate or have the IsFromBirth field set to true."
+*                    fieldPath :
+*                      type : string
+*                      example : "Candidate.CurrentName.KnownFromDate"
+*                    errorLevel :
+*                      type : number
+*                      example : 0
+*              description:
+*                type : string
+*                example : "Please check your input"
+*              api : 
+*                type : string
+*                example : "Credit Check Api"
+*              function :
+*                type : string
+*                example : "createOrder"
+*              stacktrace :
+*                type : string
+*                example : "Bad Request: Bad Request: [object Object],[object Object]\n    at Promise.catch (C:\\xampp\\htdocs\\RobaMortgage\\Services\\creditcheckapi\\app\\controllers\\createOrder.controller.js:99:9)\n    at process._tickCallback (internal/process/next_tick.js:68:7)"       
+*        401:
+*          description: Invalid Authorization
+*        403:
+*          description: Forbidden
+*        404:
+*          description : Not Found
+*        405:
+*          description: Method Not Allowed
+*/
 router.post('/check/aml',
-    validationMiddleware(checkAMLSchema, 'body'),
-    (req, res) => {
-        if(req.query.mock == "true") {
-            res.status(200).json(mockResponses.doAMLCheckResponse())
-        } else {
-            verifileProxy
-                .doAMLCheck(req.body)
-                .then((response) => {
-                    res.status(200).json({
-                        id: response.data.Id,
-                        status: response.data.OrderState.StateDescription
-                    })
-                })
-                .catch((error) => {
-                    console.log(error)
-                    res.status(500).json({ error: error })
-                })
-        }
+    validationMiddleware(ValidationSchemas.checkAMLSchema, 'body'),
+    (req, res, next) => {
+        logger.info("Performing AML check")
+        verifileProxy
+            .doAMLCheck(req.body)
+            .then(response => res.json(response))
+            .catch(error => next(error))
     }
-);
-/**
- * @swagger
- *
- *  paths:
- *      /check/{id}/status:
- *         get:
- *          description: Returns the status of a previously requested check
- *          produces:
- *            - application/json
- *          parameters:
- *              - in: query
- *                name: mock
- *                required: false
- *                schema:
- *                  type: boolean
- *                description: When true, returns a mock response   
- *              - in: path
- *                name: id   # Note the name is the same as in the path
- *                required: true
- *                schema:
- *                  type: integer
- *                description: The id of a previously requested check
-  *         responses:
- *           200:
- *              description: Returns id and application status
- *              content:
- *                  'application/json':
- *                      schema:
- *                          type: object
- *                          properties:
- *                              id:
- *                                  type: integer
- *                              candidateFullName:
- *                                  type: string
- *                              check:
- *                                  type: integer
- *                              status:
- *                                  type: string
- */
-router.get('/check/:id/status',
-    (req, res) => {
-        if(req.query.mock == "true") {
-            res.status(200).json(mockResponses.getOrderStatusResponse(req.params.id))
-        } else {
-            verifileProxy
-                .getOrderStatus(req.params.id)
-                .then((response) => {
-                    res.status(200).json({
-                        id: response.data.id,
-                        candidateFullName: response.data.candidateFullName,
-                        check: mapCheckType(response.data.checkStatuses[0].checkName),
-                        status: response.data.orderStatus
-                    })
-                })
-                .catch((error) => {
-                    console.log(error)
-                    res.status(500).json({ error: error })
-                })
-        }
-    });
-
-function mapCheckType(checkName) {
-    if(checkName == 'UKIDAMLCheckUKAML') {
-        return "aml"
-    } else {
-        return response.checkStatuses[0].checkName
-    }
-}
+)
 
 module.exports = router
