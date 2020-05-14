@@ -1,6 +1,7 @@
 const router = require('express').Router()
-const verifileProxy = require('../endpoints/verifile-proxy')
-
+const verifileProxy = require('../endpoints/verifileProxy')
+const logger = require('log4js').getLogger('getOrderStatusRoute');
+const rTracer = require('cls-rtracer')
 /**
  * @swagger
  *
@@ -58,6 +59,8 @@ router.get('/check/:id/status',
 function mapCheckType(checkName) {
     if(checkName == 'UKIDAMLCheckUKAML') {
         return "aml"
+    } else if(checkName == 'UKCreditCheckEquifax') {
+        return "credit"
     } else {
         return response.checkStatuses[0].checkName
     }

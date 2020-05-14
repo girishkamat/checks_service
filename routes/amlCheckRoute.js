@@ -1,8 +1,9 @@
 const router = require('express').Router()
-const validationMiddleware = require('./validation-middleware')
-const verifileProxy = require('../endpoints/verifile-proxy')
-const ValidationSchemas = require('./validation-schemas')
-var logger = require('log4js').getLogger('aml-check-route');
+const validationMiddleware = require('./validationMiddleware')
+const verifileProxy = require('../endpoints/verifileProxy')
+const ValidationSchemas = require('./validationSchemas')
+const logger = require('log4js').getLogger('amlCheckRoute');
+const rTracer = require('cls-rtracer')
 
 /**
 * @swagger
@@ -78,12 +79,12 @@ var logger = require('log4js').getLogger('aml-check-route');
 */
 router.post('/check/aml',
     validationMiddleware(ValidationSchemas.checkAMLSchema, 'body'),
-    (req, res, next) => {
-        logger.info("Performing AML check")
-        verifileProxy
-            .doAMLCheck(req.body)
-            .then(response => res.json(response))
-            .catch(error => next(error))
+    async function(req, res, next) {
+        logger.info(`[${rTracer.id()}] Performing AML check`)
+        const response = await verifileProxy.doAMLCheck(req.body).catch(error => next(error))
+        if(response) {
+            res.json(response)
+        }
     }
 )
 

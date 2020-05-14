@@ -2,22 +2,28 @@ const axios = require('axios')
 const uuidv4 = require('uuid').v4
 const config = require("config")
 const HttpStatus = require('http-status-codes');
-const VerifileException = require('../exceptions/verifile-exception')
-const axiosInstance = axios.create({
-    baseURL: `${config.get('verifile.endPoint')}/api/v1`,
-    timeout: config.get('verifile.readTimeout'),
-    headers: {
-        'VerifileUserId': config.get('verifile.userId'),
-        'Ocp-Apim-Subscription-Key': config.get('verifile.ocpAPISubscriptionKey'),
-        'Content-Type': 'application/json'
-    }
-})
+const VerifileException = require('../exceptions/verifileException')
+const logger = require('log4js').getLogger('verifileProxy');
+const rTracer = require('cls-rtracer')
 
 class VerifileProxy {
 
+    constructor() {
+        this.axiosInstance = axios.create({
+            baseURL: `${config.get('verifile.endPoint')}/api/v1`,
+            timeout: config.get('verifile.readTimeout'),
+            headers: {
+                'VerifileUserId': config.get('verifile.userId'),
+                'Ocp-Apim-Subscription-Key': config.get('verifile.ocpAPISubscriptionKey'),
+                'Content-Type': 'application/json'
+            }
+        })
+    }
+
     doAMLCheck(amlCheckRequest) {
+        logger.info(`[${rTracer.id()}] Performing AML check against Verifile API`)
         const request = this.buildAMLCheckRequest(amlCheckRequest)
-        return axiosInstance
+        return this.axiosInstance
             .post('/orders/cliententry', request)
             .then(response => {
                 return {
@@ -46,7 +52,7 @@ class VerifileProxy {
     }
 
     getOrderStatus(id) {
-        return axiosInstance.get('/orders/' + id + '/status')
+        return this.axiosInstance.get('/orders/' + id + '/status')
     }
 
     buildAMLCheckRequest(amlCheckRequest) {

@@ -1,13 +1,12 @@
 const Joi = require('@hapi/joi')
-    .extend(require('@hapi/joi-date'));
-const valueSets = require('./value-sets')
+    .extend(require('@hapi/joi-date'))
+const valueSets = require('./valueSets')
 
-const title= valueSets.title
+const title = valueSets.title
 const countryCodes = valueSets.countryCodeSet
 const gender = valueSets.gender
 const fsa = valueSets.fsa
 const drivingLicenseTypes = valueSets.drivingLicenseTypes
-const applicantTypes = valueSets.applicantTypes
                 
 module.exports = {
     checkAMLSchema: Joi.object().keys({

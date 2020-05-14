@@ -1,4 +1,4 @@
-const RequestValidationException = require('../exceptions/request-validation-exception')
+const RequestValidationException = require('../exceptions/requestValidationException')
 
 const middleware = (schema, property) => { 
   return (req, res, next) => { 

@@ -46,13 +46,10 @@ var fsa = ['True','False','Unknown']
 
 var drivingLicenseTypes = ['Unknown', 'Paper' , 'Photo']
 
-var applicantTypes = ['Candidate','Contractor','Current Employee','Temp']
-
 module.exports = {
     title : title,
     countryCodeSet : countryCodeSet,
     gender: gender,
     fsa : fsa,
-    drivingLicenseTypes : drivingLicenseTypes,
-    applicantTypes : applicantTypes
+    drivingLicenseTypes : drivingLicenseTypes
 }
